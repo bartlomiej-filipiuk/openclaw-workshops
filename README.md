@@ -4,20 +4,21 @@ Osobisty asystent AI, którego postawisz w 30 minut. Podłączysz go do Telegram
 
 ## Zanim zaczniesz
 
-→ [przygotowanie.md](przygotowanie.md) — co zainstalować przed warsztatami (Node.js 22+, Telegram, klucz API)
+> [przygotowanie.md](przygotowanie.md) — co zainstalować przed warsztatami (Docker, Telegram, klucz API)
 
 ---
 
 ## Krok 1: Instalacja
 
 ```bash
-npm install -g openclaw@latest
-openclaw onboard --install-daemon
+git clone https://github.com/openclaw/openclaw.git
+cd openclaw
+./docker-setup.sh
 ```
 
-Kreator przeprowadzi Cię przez konfigurację modelu AI i kanałów.
+Skrypt zbuduje obraz Docker i przeprowadzi Cię przez konfigurację modelu AI i kanałów.
 
-Szczegóły i wariant Docker: [SETUP.md](SETUP.md)
+Szczegóły: [SETUP.md](SETUP.md) | Prompt dla agenta AI: [DOCKER-STARTER.md](DOCKER-STARTER.md)
 
 ## Krok 2: Telegram bot
 
@@ -28,7 +29,8 @@ Szczegóły i wariant Docker: [SETUP.md](SETUP.md)
 5. Zatwierdź parowanie:
 
 ```bash
-openclaw pairing approve telegram <KOD>
+cd openclaw
+docker compose run --rm openclaw-cli pairing approve telegram <KOD>
 ```
 
 ## Krok 3: Gadasz z botem
@@ -37,11 +39,7 @@ Napisz cokolwiek do bota na Telegramie. Odpowiada? Lecimy dalej.
 
 ## Krok 4: Personalizacja
 
-Edytuj pliki w `~/.openclaw/workspace/` albo przez dashboard:
-
-```bash
-openclaw dashboard
-```
+Edytuj pliki w `~/.openclaw/workspace/` albo przez dashboard: http://127.0.0.1:18789/
 
 | Plik | Co zmienić |
 |------|-----------|
@@ -60,20 +58,19 @@ Wybierz co chcesz zrobić z agentem → [POMYSLY.md](POMYSLY.md)
 ## Pomoc
 
 ```bash
-openclaw doctor     # diagnostyka
-openclaw logs       # logi na żywo
-openclaw restart    # restart gateway
-openclaw dashboard  # panel sterowania w przeglądarce
+cd openclaw
+docker compose run --rm openclaw-cli doctor          # diagnostyka
+docker compose logs -f openclaw-gateway               # logi na żywo
+docker compose restart openclaw-gateway                # restart
 ```
 
-Opis panelu sterowania: [DASHBOARD.md](DASHBOARD.md)
+Dashboard: http://127.0.0.1:18789/ | Opis panelu: [DASHBOARD.md](DASHBOARD.md)
 
 ## Czyszczenie (po warsztatach)
 
-Jeśli chcesz usunąć OpenClaw:
-
 ```bash
-openclaw gateway uninstall    # usuwa daemon
+cd openclaw
+docker compose down            # zatrzymuje kontenery
+docker rmi openclaw:local      # usuwa obraz Docker
 rm -rf ~/.openclaw             # usuwa konfigurację i dane
-npm uninstall -g openclaw      # usuwa CLI
 ```

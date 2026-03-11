@@ -6,19 +6,25 @@ W piątek stawiamy wspólnie OpenClaw - otwartoźródłowego, osobistego asysten
 
 ---
 
-## 1. Node.js (wersja 22 lub nowsza)
+## 1. Docker
 
-To jedyny twardy wymóg - OpenClaw instaluje się przez npm.
+To główny wymóg - OpenClaw uruchamiamy w kontenerze Docker.
 
 | System | Jak zainstalować |
 |--------|-----------------|
-| **macOS** | `brew install node@22` lub przez [nvm](https://github.com/nvm-sh/nvm) |
-| **Linux (Ubuntu)** | `nvm install 22` lub [NodeSource](https://deb.nodesource.com/setup_22.x) |
-| **Windows** | WSL2 + Ubuntu (potem jak Linux) - patrz sekcja poniżej |
+| **macOS** | [Docker Desktop](https://www.docker.com/products/docker-desktop/) |
+| **Windows** | [Docker Desktop](https://www.docker.com/products/docker-desktop/) (wymaga WSL2 - patrz sekcja poniżej) |
+| **Linux (Ubuntu)** | `sudo apt install -y docker.io docker-compose-v2` |
+
+Sprawdź po instalacji:
+```
+docker --version          → Docker version 2x.x.x
+docker compose version    → Docker Compose version v2.x.x
+```
 
 ### Windows - konfiguracja WSL2
 
-WSL2 daje pełne środowisko Linux wewnątrz Windowsa. Instalacja jest prosta, ale wymaga kilku kroków:
+Docker Desktop na Windowsie wymaga WSL2. Instalacja jest prosta, ale wymaga kilku kroków:
 
 1. Otwórz **PowerShell jako Administrator** (prawy klik → "Uruchom jako administrator")
 2. Wpisz:
@@ -32,6 +38,7 @@ WSL2 daje pełne środowisko Linux wewnątrz Windowsa. Instalacja jest prosta, a
    wsl --list --verbose
    ```
    Powinno pokazać Ubuntu z wersją 2.
+6. Teraz zainstaluj Docker Desktop - automatycznie podepnie się pod WSL2.
 
 **Jak wchodzić do Linuxa?**
 - W Windows Terminal (zalecany - zainstaluj ze Store) pojawi się zakładka "Ubuntu"
@@ -43,20 +50,17 @@ WSL2 daje pełne środowisko Linux wewnątrz Windowsa. Instalacja jest prosta, a
 - *Instalacja wisi na 0%* → Spróbuj: `wsl --install --web-download`
 - *Windows 10?* → Wymagany build 19041+ (wersja 2004 lub nowsza). Sprawdź: `winver`
 
-**Ważne:** Wszystkie komendy z warsztatów (node, npm, openclaw) wpisujcie wewnątrz terminala Ubuntu/WSL, nie w PowerShell.
+**Ważne:** Wszystkie komendy z warsztatów wpisujcie wewnątrz terminala Ubuntu/WSL, nie w PowerShell.
 
-Sprawdź po instalacji Node.js:
+## 2. Git
+
+Potrzebny do sklonowania repo OpenClaw.
+
 ```
-node --version   → v22.x.x lub wyżej
+git --version   → git version 2.x.x
 ```
 
-## 2. Docker (opcjonalnie)
-
-Pokażemy też wariant z Dockerem - jeśli chcesz go wypróbować:
-- **macOS / Windows** - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- **Linux** - `sudo apt install -y docker.io docker-compose-v2`
-
-Nie jest wymagany - wariant npm wystarczy.
+Jeśli nie masz: macOS `xcode-select --install`, Linux `sudo apt install git`.
 
 ## 3. Komunikator: Telegram lub Discord
 
@@ -90,8 +94,8 @@ Nie wymagany, ale bardzo przydatny na warsztatach do konfiguracji i debugowania 
 
 Odhaczyj przed piątkiem:
 
-- [ ] Node.js >= 22 zainstalowany (`node --version`)
-- [ ] Docker zainstalowany (opcjonalnie)
+- [ ] Docker zainstalowany (`docker --version` + `docker compose version`)
+- [ ] Git zainstalowany (`git --version`)
 - [ ] Telegram lub Discord na telefonie/lapku
 - [ ] Konto OpenRouter (lub inny provider) + doładowane, ew. subskrypcja ChatGPT.
 - [ ] Edytor kodu + terminal
