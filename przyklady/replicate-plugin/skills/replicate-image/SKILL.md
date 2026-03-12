@@ -8,37 +8,37 @@ metadata:
         - REPLICATE_API_TOKEN
 ---
 
-# Generowanie obrazów — Replicate
+# Image Generation — Replicate
 
-Używasz toola `replicate_generate_image` do generowania obrazów na żądanie użytkownika.
+Use the `replicate_generate_image` tool to generate images on user request.
 
-## Wybór modelu
+## Model Selection
 
-Dopasuj model do zadania:
+Match the model to the task:
 
-| Potrzeba | Model | Dlaczego |
-|----------|-------|----------|
-| Szybki szkic, koncept, test | `black-forest-labs/flux-schnell` | Szybki (~2s), tani, dobra jakość na drafty |
-| Fotorealizm, hero image, marketing | `black-forest-labs/flux-1.1-pro` | Wysoka jakość, dobry na finalne grafiki |
-| Duża rozdzielczość, print, plakat | `black-forest-labs/flux-1.1-pro-ultra` | Największy output, najlepsza szczegółowość |
+| Need | Model | Why |
+|------|-------|-----|
+| Quick sketch, concept, test | `black-forest-labs/flux-schnell` | Fast (~2s), cheap, good quality for drafts |
+| Photorealism, hero image, marketing | `black-forest-labs/flux-1.1-pro` | High quality, good for final graphics |
+| High resolution, print, poster | `black-forest-labs/flux-1.1-pro-ultra` | Largest output, best detail |
 
-## Reguły
+## Rules
 
-1. **Domyślnie używaj `flux-schnell`** — jest najszybszy i najtańszy. Wystarczy do większości próśb.
-2. **Jeśli user prosi o wysoką jakość, fotorealizm lub materiał marketingowy** → `flux-1.1-pro`.
-3. **Jeśli user prosi o dużą rozdzielczość, print lub plakat** → `flux-1.1-pro-ultra`.
-4. **Jeśli user podał model wprost** → uszanuj wybór, nie nadpisuj.
-5. **Jeśli wymagania są niejednoznaczne i mogą wpłynąć na koszt** → dopytaj usera zanim wybierzesz droższy model.
-6. **Prompt pisz po angielsku** — modele Flux działają najlepiej z angielskimi promptami. Przetłumacz opis usera jeśli pisze po polsku.
-7. **Aspect ratio** — dopasuj do kontekstu:
-   - Post na social media → `1:1`
-   - Tapeta / banner → `16:9`
+1. **Default to `flux-schnell`** — fastest and cheapest. Sufficient for most requests.
+2. **If user asks for high quality, photorealism, or marketing material** → `flux-1.1-pro`.
+3. **If user asks for high resolution, print, or poster** → `flux-1.1-pro-ultra`.
+4. **If user specified a model explicitly** → respect their choice, do not override.
+5. **If requirements are ambiguous and may affect cost** → ask the user before choosing a more expensive model.
+6. **Write prompts in English** — Flux models work best with English prompts. Translate the user's description if they write in another language.
+7. **Aspect ratio** — match to context:
+   - Social media post → `1:1`
+   - Wallpaper / banner → `16:9`
    - Story / reel → `9:16`
-   - Jeśli user nie sprecyzował → `1:1`
+   - If user didn't specify → `1:1`
 
-## Format odpowiedzi
+## Response Format
 
-Po wygenerowaniu obrazu:
-- Pokaż URL obrazu
-- Powiedz jaki model został użyty
-- Jeśli user chce modyfikacje — zaproponuj zmianę promptu lub modelu
+After generating an image:
+- Show the image URL
+- State which model was used
+- If the user wants modifications — suggest changing the prompt or model
