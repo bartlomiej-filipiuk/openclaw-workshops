@@ -199,7 +199,8 @@ openclaw skills check                            # sprawdź które działają
 
 ```bash
 openclaw plugins list                            # zainstalowane pluginy
-openclaw plugins install <nazwa>                 # zainstaluj plugin
+openclaw plugins install <nazwa>                 # zainstaluj plugin (z rejestru)
+openclaw plugins install -l ./path               # zainstaluj z lokalnego katalogu
 openclaw plugins enable <id>                     # włącz plugin
 openclaw plugins disable <id>                    # wyłącz plugin
 openclaw plugins update --all                    # aktualizuj wszystkie

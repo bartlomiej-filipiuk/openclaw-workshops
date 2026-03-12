@@ -1,0 +1,20 @@
+{
+  "id": "replicate",
+  "name": "Replicate Image Generation",
+  "version": "0.1.0",
+  "description": "Generowanie obrazów przez Replicate API (Flux, Stable Diffusion i inne)",
+  "configSchema": {
+    "apiToken": {
+      "type": "string",
+      "description": "Replicate API token (https://replicate.com/account/api-tokens)",
+      "sensitive": true
+    }
+  },
+  "uiHints": {
+    "apiToken": {
+      "label": "Replicate API Token",
+      "sensitive": true,
+      "placeholder": "r8_..."
+    }
+  }
+}

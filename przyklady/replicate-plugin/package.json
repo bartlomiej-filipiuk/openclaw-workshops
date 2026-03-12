@@ -1,0 +1,12 @@
+{
+  "name": "@openclaw-workshop/replicate-plugin",
+  "version": "0.1.0",
+  "description": "Plugin OpenClaw do generowania obrazów przez Replicate API",
+  "type": "module",
+  "openclaw": {
+    "extensions": ["./src/index.ts"]
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

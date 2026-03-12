@@ -167,5 +167,6 @@ Wybierz projekt i leć → [POMYSLY.md](POMYSLY.md)
 | Wszystkie komendy | [CHEATSHEET.md](CHEATSHEET.md) |
 | Opis panelu dashboard | [DASHBOARD.md](DASHBOARD.md) |
 | Agent AI zamiast ręcznej konfiguracji | [DOCKER-STARTER.md](DOCKER-STARTER.md) |
+| Własne integracje API (plugin + skill) | [INTEGRACJA-API.md](INTEGRACJA-API.md) |
 | Docker zaawansowany (mapowanie katalogów, narzędzia) | [SETUP.md sekcja 9](SETUP.md#9-docker-zaawansowany--narzędzia-z-hosta-i-mapowanie-katalogów) |
 | Czyszczenie po warsztatach | [SETUP.md sekcja 10](SETUP.md#10-czyszczenie-po-warsztatach) |
