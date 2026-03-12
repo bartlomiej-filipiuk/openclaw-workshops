@@ -50,27 +50,42 @@ export default function register(api: OpenClawPluginAPI) {
 
       const selectedModel = model || "black-forest-labs/flux-schnell";
 
-      // 2. Utwórz prediction (POST)
-      const createResponse = await fetch(`${REPLICATE_API}/predictions`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: selectedModel,
-          input: {
-            prompt,
-            aspect_ratio: aspect_ratio || "1:1",
-            output_format: output_format || "webp",
+      // Walidacja formatu modelu (owner/name)
+      const parts = String(selectedModel).split("/");
+      if (parts.length !== 2 || !parts[0] || !parts[1]) {
+        return {
+          error: `Nieprawidłowy model: "${selectedModel}". Oczekiwano formatu "owner/name", np. "black-forest-labs/flux-schnell".`,
+        };
+      }
+      const [owner, name] = parts;
+
+      // 2. Utwórz prediction (model-specific endpoint)
+      const createResponse = await fetch(
+        `${REPLICATE_API}/models/${owner}/${name}/predictions`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            input: {
+              prompt,
+              aspect_ratio: aspect_ratio || "1:1",
+              output_format: output_format || "webp",
+            },
+          }),
+        },
+      );
 
       if (!createResponse.ok) {
-        const errorBody = await createResponse.text();
+        let errorText = await createResponse.text();
+        try {
+          const parsed = JSON.parse(errorText);
+          errorText = parsed.detail || parsed.error || errorText;
+        } catch {}
         return {
-          error: `Replicate API error (${createResponse.status}): ${errorBody}`,
+          error: `Replicate API error (${createResponse.status}): ${errorText}`,
         };
       }
 

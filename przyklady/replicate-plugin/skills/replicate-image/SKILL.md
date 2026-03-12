@@ -1,6 +1,6 @@
 ---
-name: replicate_image
-description: Generowanie obrazów przez Replicate — dobiera model do zadania
+name: replicate-image
+description: "Generate images from text prompts via Replicate API (Flux, Stable Diffusion). Use when: user asks to create, generate, or draw an image, illustration, photo, graphic, icon, or artwork. Handles model selection (quality vs speed), aspect ratio, resolution, and prompt engineering."
 metadata:
   openclaw:
     requires:

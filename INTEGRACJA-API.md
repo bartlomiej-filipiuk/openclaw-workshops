@@ -35,7 +35,7 @@ Skill (SKILL.md) — decyzja:
   │
   ▼
 Tool z pluginu (replicate_generate_image) — wykonanie:
-  POST /v1/predictions → polling statusu → URL obrazu
+  POST /v1/models/{owner}/{name}/predictions → polling statusu → URL obrazu
   │
   ▼
 Odpowiedź do usera: "Oto Twój obraz: [URL]"
@@ -377,7 +377,7 @@ przyklady/replicate-plugin/
 
 1. **Plugin** (`src/index.ts`) rejestruje tool `replicate_generate_image`:
    - Przyjmuje: `prompt`, `model` (opcjonalny), `aspect_ratio`, `output_format`
-   - Wysyła POST do Replicate API → tworzy prediction
+   - Wysyła POST do `/v1/models/{owner}/{name}/predictions` → tworzy prediction
    - Polluje status co 2 sekundy aż do `succeeded` / `failed` / timeout (3 min)
    - Zwraca URL wygenerowanego obrazu
 
@@ -438,7 +438,7 @@ docker compose restart openclaw-gateway
 Sprawdź:
 ```bash
 openclaw plugins list     # → replicate
-openclaw skills check     # → replicate_image: eligible
+openclaw skills check     # → replicate-image: eligible
 ```
 
 Napisz do bota na Telegramie:
