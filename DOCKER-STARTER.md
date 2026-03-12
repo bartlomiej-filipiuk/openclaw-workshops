@@ -4,7 +4,9 @@ Poniższy dokument to instrukcja, którą możesz wkleić do agenta AI (Claude C
 
 ---
 
-## Prompt
+## Tryb auto (domyślny) — agent wykonuje komendy
+
+Wklej ten prompt do agenta z dostępem do terminala (Claude Code, Cursor, Codex). Agent sam odpala komendy i weryfikuje wyniki.
 
 ```
 Pomóż mi postawić OpenClaw w Dockerze. Przeprowadź mnie przez cały proces krok po kroku.
@@ -137,4 +139,88 @@ Wszystkie komendy openclaw w Dockerze idą przez `docker compose run --rm opencl
 | Dashboard | Otwórz http://127.0.0.1:18789/ w przeglądarce |
 
 Pamiętaj: musisz być w katalogu ~/openclaw (gdzie jest docker-compose.yml) żeby te komendy działały.
+```
+
+---
+
+## Tryb guided — agent prowadzi, ty odpalasz komendy
+
+Jeśli wolisz sam wpisywać komendy w terminalu, a agent ma Cię tylko prowadzić — użyj tego promptu. Działa też w agentach bez dostępu do terminala (np. ChatGPT, Claude.ai).
+
+```
+Pomóż mi postawić OpenClaw w Dockerze. Prowadź mnie krok po kroku, ale NIE wykonuj komend sam.
+Zamiast tego:
+- Pokaż mi dokładnie jaką komendę wpisać i co powinien być wynik
+- Poczekaj aż wkleję Ci output — dopiero wtedy przejdź dalej
+- Jeśli wynik jest inny niż oczekiwany, pomóż mi zdiagnozować problem
+- Przy każdym kroku wyjaśnij krótko co robimy i dlaczego
+
+### Wymagania wstępne
+
+Poproś mnie o uruchomienie po kolei:
+- `docker info` — powinno zwrócić info o silniku Docker
+- `docker compose version` — powinno zwrócić wersję Compose
+- `git --version` — potrzebny do sklonowania repo
+
+Jeśli cokolwiek brakuje, powiedz mi co zainstalować i zatrzymaj się.
+
+### Krok 1: Sklonuj repo i uruchom setup
+
+Powiedz mi żebym uruchomił:
+```bash
+git clone https://github.com/openclaw/openclaw.git ~/openclaw
+cd ~/openclaw
+./docker-setup.sh
+```
+
+Skrypt jest interaktywny — przeprowadzi onboarding:
+1. Ostrzeżenie bezpieczeństwa → akceptuję (Yes)
+2. Provider modelu AI → pytam o wybór (OpenRouter / Anthropic / OpenAI)
+3. Kanał komunikacji → Telegram (muszę podać token z @BotFather)
+4. Web Search → opcjonalne, można pominąć
+5. Skills → opcjonalne, można pominąć
+
+### Krok 2: Weryfikacja
+
+Poproś mnie o uruchomienie:
+```bash
+curl http://127.0.0.1:18789/healthz
+```
+Oczekiwany wynik: `{"ok":true,"status":"live"}`
+
+Potem:
+```bash
+cd ~/openclaw
+docker compose run --rm openclaw-cli channels status --probe
+```
+Telegram powinien być: enabled, running, works.
+
+### Krok 3: Parowanie z Telegramem
+
+Powiedz mi żebym:
+1. Otworzył Telegram, znalazł swojego bota i wysłał `/start`
+2. Wkleił kod parowania — potem pokaż mi komendę do zatwierdzenia:
+```bash
+cd ~/openclaw
+docker compose run --rm openclaw-cli pairing approve telegram <KOD>
+```
+
+### Krok 4: Test
+
+Powiedz mi żebym napisał wiadomość do bota na Telegramie, a potem wkleił Ci output z:
+```bash
+docker compose logs --tail=20 openclaw-gateway
+```
+
+### Krok 5: Dashboard
+
+Powiedz mi żebym otworzył http://127.0.0.1:18789/ w przeglądarce.
+
+### Troubleshooting
+
+Jeśli coś nie działa, pomóż mi diagnozować. Te komendy mogą się przydać:
+- `docker compose ps -a` — status kontenerów
+- `docker compose logs --tail=50 openclaw-gateway` — ostatnie logi
+- `docker compose restart openclaw-gateway` — restart
+- `lsof -i :18789` — sprawdź czy port jest wolny
 ```
