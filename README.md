@@ -2,6 +2,8 @@
 
 Osobisty asystent AI, którego postawisz w 30 minut. Podłączysz go do Telegrama, nadasz mu charakter i nauczysz nowych rzeczy.
 
+> **[MAPA.md](MAPA.md)** — chronologiczny przewodnik od zera do działającego bota (zacznij tutaj)
+
 ## Zanim zaczniesz
 
 > [przygotowanie.md](przygotowanie.md) — co zainstalować przed warsztatami (Docker, Telegram, klucz API)
