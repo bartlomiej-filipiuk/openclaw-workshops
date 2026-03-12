@@ -84,6 +84,23 @@ Otwórz panel sterowania:
 open http://127.0.0.1:18789/
 ```
 
+### Restart po zmianach konfiguracji
+
+Po zmianie kluczy API (np. Brave Search, OpenRouter), modelu lub konfiguracji kanałów — gateway musi zostać zrestartowany, żeby zaciągnął nowe wartości.
+
+```bash
+cd ~/openclaw
+docker compose restart openclaw-gateway
+```
+
+Jeśli zwykły restart nie pomaga (gateway się krzaczy, wisi, nie reaguje):
+```bash
+cd ~/openclaw
+docker compose up -d --force-recreate openclaw-gateway
+```
+
+`--force-recreate` ubija kontener i tworzy go od nowa — czyści stan procesu, ale **nie kasuje danych** (konfiguracja w `~/.openclaw/` jest na volume).
+
 ### Troubleshooting
 
 **EACCES: permission denied, mkdir '/Users'**
@@ -215,6 +232,20 @@ docker compose logs --tail=20 openclaw-gateway
 ### Krok 5: Dashboard
 
 Powiedz mi żebym otworzył http://127.0.0.1:18789/ w przeglądarce.
+
+### Restart po zmianach konfiguracji
+
+Po zmianie kluczy API, modelu lub konfiguracji kanałów — gateway wymaga restartu:
+```bash
+cd ~/openclaw
+docker compose restart openclaw-gateway
+```
+
+Jeśli restart nie pomaga:
+```bash
+cd ~/openclaw
+docker compose up -d --force-recreate openclaw-gateway
+```
 
 ### Troubleshooting
 
