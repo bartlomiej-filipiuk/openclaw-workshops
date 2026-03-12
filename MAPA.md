@@ -86,7 +86,7 @@ Kreator zapyta o dostawcę wyszukiwania. Możesz pominąć — dodasz później.
 
 Kreator zaproponuje instalację rozszerzeń. Możesz pominąć — dodasz później przez `clawhub install <nazwa>`.
 
-→ Szczegóły: [SETUP.md krok 5](SETUP.md#krok-5-skills)
+→ Szczegóły: [SETUP.md krok 5](SETUP.md#krok-5-skills) | [SKILLS-CLAWHUB.md](SKILLS-CLAWHUB.md)
 
 ---
 
@@ -163,6 +163,7 @@ Wybierz projekt i leć → [POMYSLY.md](POMYSLY.md)
 
 | Potrzebuję... | Gdzie |
 |---------------|-------|
+| Skille i ClawHub | [SKILLS-CLAWHUB.md](SKILLS-CLAWHUB.md) |
 | Wszystkie komendy | [CHEATSHEET.md](CHEATSHEET.md) |
 | Opis panelu dashboard | [DASHBOARD.md](DASHBOARD.md) |
 | Agent AI zamiast ręcznej konfiguracji | [DOCKER-STARTER.md](DOCKER-STARTER.md) |
