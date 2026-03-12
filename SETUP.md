@@ -334,7 +334,114 @@ docker compose down && ./docker-setup.sh   # reset (od nowa)
 
 ---
 
-## 9. Czyszczenie (po warsztatach)
+## 9. Docker zaawansowany — narzędzia z hosta i mapowanie katalogów
+
+### Mapowanie katalogów (bind mount)
+
+Żeby katalog z Twojego Maca był widoczny wewnątrz kontenera (i zmiany działały w obie strony), dodaj volume w `docker-compose.yml`:
+
+```yaml
+services:
+  openclaw-gateway:
+    volumes:
+      # istniejące wolumeny (nie ruszaj):
+      - ~/.openclaw:/home/node/.openclaw
+      # Twoje nowe mapowania:
+      - ~/projekty:/home/node/projekty        # katalog z projektami
+      - ~/Documents/notatki:/home/node/notatki # notatki
+```
+
+Po zmianie `docker-compose.yml` zrestartuj kontener:
+```bash
+cd ~/openclaw
+docker compose down
+docker compose up -d openclaw-gateway
+```
+
+Sprawdź czy mapowanie działa:
+```bash
+# Z hosta — utwórz plik testowy:
+echo "test" > ~/projekty/test.txt
+
+# W kontenerze — powinien być widoczny:
+docker exec -it openclaw-openclaw-gateway-1 cat /home/node/projekty/test.txt
+```
+
+**Ważne:**
+- Ścieżka po lewej stronie `:` = ścieżka na Twoim Macu
+- Ścieżka po prawej stronie `:` = ścieżka wewnątrz kontenera
+- Zmiany są natychmiastowe i dwukierunkowe — edycja w kontenerze widoczna na hoście i odwrotnie
+- Docker Desktop na macOS może zapytać o uprawnienia dostępu do katalogów (potwierdź)
+
+### Narzędzia z hosta wewnątrz Dockera
+
+Programy zainstalowane na Macu (np. `claude`, `gh`, `code`) **nie są automatycznie dostępne** w kontenerze. Kontener ma własny system plików.
+
+#### Opcja A: Zainstaluj w kontenerze (tymczasowo)
+
+Wejdź do kontenera i zainstaluj:
+```bash
+docker exec -it openclaw-openclaw-gateway-1 bash
+
+# Wewnątrz kontenera:
+npm install -g @anthropic-ai/claude-code    # claude
+apt-get update && apt-get install -y curl    # inne narzędzia
+```
+
+**Uwaga:** Instalacja zniknie po restarcie kontenera (`docker compose down` / `up`). Dobre do testów, nie na stałe.
+
+#### Opcja B: Dodaj do Dockerfile (trwale)
+
+Edytuj `Dockerfile` w katalogu `~/openclaw` i dodaj instalację potrzebnych narzędzi:
+```dockerfile
+# Dopisz przed końcowym CMD/ENTRYPOINT:
+RUN npm install -g @anthropic-ai/claude-code
+```
+
+Przebuduj obraz:
+```bash
+cd ~/openclaw
+docker compose build
+docker compose up -d openclaw-gateway
+```
+
+Teraz narzędzie będzie dostępne po każdym restarcie.
+
+#### Opcja C: Zamontuj binarkę z hosta (zaawansowane)
+
+Jeśli narzędzie to pojedynczy plik binarny, możesz zamontować go jako volume:
+```yaml
+services:
+  openclaw-gateway:
+    volumes:
+      - /usr/local/bin/gh:/usr/local/bin/gh:ro  # GitHub CLI (read-only)
+```
+
+**Ograniczenia:**
+- Działa tylko dla statycznie linkowanych binariów lub takich z kompatybilnymi zależnościami
+- macOS binaria **nie działają** w kontenerze Linux — ta metoda nadaje się głównie do narzędzi które masz w wersji Linux
+- Dla narzędzi Node.js (jak `claude`) lepiej użyj opcji A lub B
+
+#### Opcja D: Przekaż klucze API zamiast narzędzi
+
+Często nie musisz mieć narzędzia w kontenerze — wystarczy że kontener ma dostęp do tego samego API. Przekaż zmienne środowiskowe w `docker-compose.yml`:
+```yaml
+services:
+  openclaw-gateway:
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+```
+
+Lub w pliku `.env` obok `docker-compose.yml`:
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+GITHUB_TOKEN=ghp_...
+```
+
+---
+
+## 10. Czyszczenie (po warsztatach)
 
 ### npm
 ```bash
