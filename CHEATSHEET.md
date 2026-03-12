@@ -2,14 +2,40 @@
 
 Wszystkie komendy zakładają Docker. Musisz być w katalogu `openclaw` (gdzie jest `docker-compose.yml`).
 
-Skrót używany poniżej:
-```bash
-# Zamiast pisać za każdym razem pełną komendę:
-docker compose run --rm openclaw-cli <komenda>
+## Jak uruchamiać komendy
 
-# Możesz ustawić alias w terminalu:
-alias oc='docker compose run --rm openclaw-cli'
-# Wtedy: oc status, oc doctor, oc models list, itd.
+Są dwa sposoby:
+
+### Sposób 1: Wejdź do kontenera (zalecany)
+
+Zaloguj się do shella wewnątrz kontenera — potem używasz `openclaw` normalnie:
+
+```bash
+# macOS / Linux:
+docker exec -it openclaw-openclaw-gateway-1 bash
+
+# Windows (PowerShell / CMD):
+docker exec -it openclaw-openclaw-gateway-1 bash
+
+# Jeśli bash nie jest dostępny:
+docker exec -it openclaw-openclaw-gateway-1 sh
+```
+
+Teraz jesteś w kontenerze i komendy działają bezpośrednio:
+```bash
+openclaw status
+openclaw doctor
+openclaw models list
+# ... itd.
+```
+
+Wyjście z kontenera: `exit`
+
+### Sposób 2: Jednorazowe komendy z hosta
+
+Bez logowania do kontenera — każda komenda osobno:
+```bash
+docker compose run --rm openclaw-cli <komenda>
 ```
 
 ---
@@ -17,19 +43,19 @@ alias oc='docker compose run --rm openclaw-cli'
 ## Status i diagnostyka
 
 ```bash
-oc status                          # szybki przegląd — kanały, sesje
-oc status --deep                   # z probes (sprawdza połączenia na żywo)
-oc doctor                          # diagnostyka problemów
-oc doctor --fix                    # automatyczna naprawa znalezionych problemów
-oc health                          # health check gateway
+openclaw status                          # szybki przegląd — kanały, sesje
+openclaw status --deep                   # z probes (sprawdza połączenia na żywo)
+openclaw doctor                          # diagnostyka problemów
+openclaw doctor --fix                    # automatyczna naprawa znalezionych problemów
+openclaw health                          # health check gateway
 ```
 
 ## Logi
 
 ```bash
-docker compose logs -f openclaw-gateway          # logi na żywo
-docker compose logs --tail=50 openclaw-gateway    # ostatnie 50 linii
-oc channels logs                                  # logi kanałów z pliku
+docker compose logs -f openclaw-gateway          # logi na żywo (z hosta)
+docker compose logs --tail=50 openclaw-gateway    # ostatnie 50 linii (z hosta)
+openclaw channels logs                            # logi kanałów z pliku
 ```
 
 ## Restart / stop / start
@@ -45,32 +71,32 @@ docker compose up -d openclaw-gateway      # uruchomienie
 ## Modele AI
 
 ```bash
-oc models                                  # aktualny model
-oc models list                             # skonfigurowane modele
-oc models list --all                       # pełny katalog dostępnych modeli
-oc models set <model>                      # zmień domyślny model
+openclaw models                                  # aktualny model
+openclaw models list                             # skonfigurowane modele
+openclaw models list --all                       # pełny katalog dostępnych modeli
+openclaw models set <model>                      # zmień domyślny model
 
 # Przykłady:
-oc models set openrouter/anthropic/claude-sonnet-4
-oc models set openrouter/google/gemini-2.5-flash
-oc models set openai-codex/gpt-5.4
+openclaw models set openrouter/anthropic/claude-sonnet-4
+openclaw models set openrouter/google/gemini-2.5-flash
+openclaw models set openai-codex/gpt-5.4
 
-oc models status --probe                   # sprawdź czy auth do modelu działa
+openclaw models status --probe                   # sprawdź czy auth do modelu działa
 ```
 
 ### Fallbacki (zapasowe modele)
 
 ```bash
-oc models fallbacks list                   # lista fallbacków
-oc models fallbacks add <model>            # dodaj fallback
-oc models fallbacks remove <model>         # usuń fallback
+openclaw models fallbacks list                   # lista fallbacków
+openclaw models fallbacks add <model>            # dodaj fallback
+openclaw models fallbacks remove <model>         # usuń fallback
 ```
 
 ### Autoryzacja modeli
 
 ```bash
-oc models auth add                         # interaktywne dodanie klucza API
-oc models auth login                       # OAuth login (np. OpenAI)
+openclaw models auth add                         # interaktywne dodanie klucza API
+openclaw models auth login                       # OAuth login (np. OpenAI)
 ```
 
 ---
@@ -78,24 +104,24 @@ oc models auth login                       # OAuth login (np. OpenAI)
 ## Kanały (Telegram, Discord, itp.)
 
 ```bash
-oc channels list                           # lista kanałów
-oc channels status --probe                 # status z live check
-oc channels add                            # dodaj kanał (interaktywne)
-oc channels remove                         # usuń kanał
+openclaw channels list                           # lista kanałów
+openclaw channels status --probe                 # status z live check
+openclaw channels add                            # dodaj kanał (interaktywne)
+openclaw channels remove                         # usuń kanał
 
 # Dodanie Telegrama bezpośrednio:
-oc channels add --channel telegram --token <BOT_TOKEN>
+openclaw channels add --channel telegram --token <BOT_TOKEN>
 
 # Dodanie Discorda:
-oc channels add --channel discord --token <BOT_TOKEN>
+openclaw channels add --channel discord --token <BOT_TOKEN>
 ```
 
 ## Parowanie (pierwsze połączenie z botem)
 
 ```bash
-oc pairing list                            # pokaż oczekujące kody parowania
-oc pairing approve telegram <KOD>          # zatwierdź parowanie Telegram
-oc pairing approve discord <KOD>           # zatwierdź parowanie Discord
+openclaw pairing list                            # pokaż oczekujące kody parowania
+openclaw pairing approve telegram <KOD>          # zatwierdź parowanie Telegram
+openclaw pairing approve discord <KOD>           # zatwierdź parowanie Discord
 ```
 
 ---
@@ -103,23 +129,23 @@ oc pairing approve discord <KOD>           # zatwierdź parowanie Discord
 ## Cron — zaplanowane zadania
 
 ```bash
-oc cron list                               # lista cron jobów
-oc cron list --all                         # łącznie z wyłączonymi
+openclaw cron list                               # lista cron jobów
+openclaw cron list --all                         # łącznie z wyłączonymi
 
 # Dodaj cron job:
-oc cron add --name "poranna-motywacja" \
+openclaw cron add --name "poranna-motywacja" \
   --every "day at 7:00" \
   --message "Wyślij mi krótką poranną motywację"
 
 # Więcej przykładów schedulingu:
-oc cron add --name "raport" --cron "0 18 * * 1-5" --message "Podsumuj mój dzień"
-oc cron add --name "reminder" --every "2h" --message "Przypomnij mi o przerwie"
+openclaw cron add --name "raport" --cron "0 18 * * 1-5" --message "Podsumuj mój dzień"
+openclaw cron add --name "reminder" --every "2h" --message "Przypomnij mi o przerwie"
 
-oc cron run <id>                           # odpal teraz (test)
-oc cron disable <id>                       # wyłącz
-oc cron enable <id>                        # włącz
-oc cron rm <id>                            # usuń
-oc cron runs --id <id>                     # historia uruchomień
+openclaw cron run <id>                           # odpal teraz (test)
+openclaw cron disable <id>                       # wyłącz
+openclaw cron enable <id>                        # włącz
+openclaw cron rm <id>                            # usuń
+openclaw cron runs --id <id>                     # historia uruchomień
 ```
 
 ---
@@ -145,17 +171,17 @@ Edytuj przez dashboard http://127.0.0.1:18789/ (zakładka Agents) lub dowolnym e
 ## Pamięć agenta
 
 ```bash
-oc memory status                           # status indeksu pamięci
-oc memory search "temat"                   # szukaj w pamięci agenta
-oc memory index                            # przeindeksuj pamięć
-oc memory index --force                    # pełna reindeksacja
+openclaw memory status                           # status indeksu pamięci
+openclaw memory search "temat"                   # szukaj w pamięci agenta
+openclaw memory index                            # przeindeksuj pamięć
+openclaw memory index --force                    # pełna reindeksacja
 ```
 
 ## Sesje (historia rozmów)
 
 ```bash
-oc sessions                                # lista sesji z zużyciem tokenów
-oc sessions cleanup                        # porządkowanie starych sesji
+openclaw sessions                                # lista sesji z zużyciem tokenów
+openclaw sessions cleanup                        # porządkowanie starych sesji
 ```
 
 ---
@@ -163,21 +189,21 @@ oc sessions cleanup                        # porządkowanie starych sesji
 ## Skills (rozszerzenia)
 
 ```bash
-oc skills list                             # dostępne skille
-oc skills list --eligible                  # gotowe do użycia
-oc skills info <nazwa>                     # szczegóły skilla
-oc skills check                            # sprawdź które działają
+openclaw skills list                             # dostępne skille
+openclaw skills list --eligible                  # gotowe do użycia
+openclaw skills info <nazwa>                     # szczegóły skilla
+openclaw skills check                            # sprawdź które działają
 ```
 
 ## Pluginy
 
 ```bash
-oc plugins list                            # zainstalowane pluginy
-oc plugins install <nazwa>                 # zainstaluj plugin
-oc plugins enable <id>                     # włącz plugin
-oc plugins disable <id>                    # wyłącz plugin
-oc plugins update --all                    # aktualizuj wszystkie
-oc plugins doctor                          # diagnostyka pluginów
+openclaw plugins list                            # zainstalowane pluginy
+openclaw plugins install <nazwa>                 # zainstaluj plugin
+openclaw plugins enable <id>                     # włącz plugin
+openclaw plugins disable <id>                    # wyłącz plugin
+openclaw plugins update --all                    # aktualizuj wszystkie
+openclaw plugins doctor                          # diagnostyka pluginów
 ```
 
 ---
@@ -185,23 +211,23 @@ oc plugins doctor                          # diagnostyka pluginów
 ## Konfiguracja (zaawansowane)
 
 ```bash
-oc config get <ścieżka>                   # odczytaj wartość
-oc config set <ścieżka> <wartość>         # ustaw wartość
-oc config unset <ścieżka>                 # usuń wartość
-oc config validate                         # sprawdź poprawność konfiga
+openclaw config get <ścieżka>                   # odczytaj wartość
+openclaw config set <ścieżka> <wartość>         # ustaw wartość
+openclaw config unset <ścieżka>                 # usuń wartość
+openclaw config validate                         # sprawdź poprawność konfiga
 
 # Przykłady:
-oc config get agents.defaults.model
-oc config set messages.ackReactionScope "all"
-oc config set channels.telegram.groupPolicy "open"
+openclaw config get agents.defaults.model
+openclaw config set messages.ackReactionScope "all"
+openclaw config set channels.telegram.groupPolicy "open"
 ```
 
 ## Bezpieczeństwo
 
 ```bash
-oc security audit                          # szybki audyt konfiga
-oc security audit --deep                   # z live probes
-oc security audit --fix                    # automatyczna naprawa
+openclaw security audit                          # szybki audyt konfiga
+openclaw security audit --deep                   # z live probes
+openclaw security audit --fix                    # automatyczna naprawa
 ```
 
 ---
@@ -210,17 +236,17 @@ oc security audit --fix                    # automatyczna naprawa
 
 ```bash
 # Wyślij wiadomość do kanału:
-oc message send --to "telegram:direct:<USER_ID>" --text "Hej!"
+openclaw message send --to "telegram:direct:<USER_ID>" --text "Hej!"
 
 # Broadcast do wielu:
-oc message broadcast --to "telegram:*" --text "Wiadomość do wszystkich"
+openclaw message broadcast --to "telegram:*" --text "Wiadomość do wszystkich"
 ```
 
 ## Backup
 
 ```bash
-oc backup create                           # stwórz backup ~/.openclaw
-oc backup verify <archiwum>               # zweryfikuj backup
+openclaw backup create                           # stwórz backup ~/.openclaw
+openclaw backup verify <archiwum>               # zweryfikuj backup
 ```
 
 ## Aktualizacja OpenClaw
