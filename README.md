@@ -64,7 +64,7 @@ docker compose logs -f openclaw-gateway               # logi na żywo
 docker compose restart openclaw-gateway                # restart
 ```
 
-Dashboard: http://127.0.0.1:18789/ | Opis panelu: [DASHBOARD.md](DASHBOARD.md)
+Dashboard: http://127.0.0.1:18789/ | Opis panelu: [DASHBOARD.md](DASHBOARD.md) | Wszystkie komendy: [CHEATSHEET.md](CHEATSHEET.md)
 
 ## Czyszczenie (po warsztatach)
 
